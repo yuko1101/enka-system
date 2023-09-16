@@ -9,7 +9,7 @@ export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
  * The game account added to the Enka.Network account.
  * @en EnkaGameAccount
  */
-class EnkaGameAccount<U extends IUser> {
+class EnkaGameAccount<U extends IUser = IUser> {
     /** Enka.Network username, not in-game nickname */
     readonly username: string;
     /**  */
