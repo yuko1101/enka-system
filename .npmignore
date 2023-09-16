@@ -11,3 +11,4 @@ dev-test/
 .eslintignore
 
 tsconfig.json
+*.tsbuildinfo
