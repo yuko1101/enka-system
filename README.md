@@ -1,2 +1,2 @@
-# package-template.ts
-A Template for Typescript package.
+# enka-system
+A Node.js library that handles the foundation of Enka.Network API.
