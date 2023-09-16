@@ -4,7 +4,6 @@ import EnkaSystem from "../client/EnkaSystem";
 
 /**
  * @param url
- * @param enka
  * @param enableTimeout
  */
 export async function fetchJson(url: string, enableTimeout = false): Promise<AxiosResponse> {

@@ -1,6 +1,6 @@
 import { JsonReader, JsonObject } from "config_file.js";
 import EnkaSystem, { HoyoType } from "../client/EnkaSystem";
-import IUser from "./IUser";
+import User from "./User";
 
 /** @typedef */
 export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
@@ -9,7 +9,7 @@ export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
  * The game account added to the Enka.Network account.
  * @en EnkaGameAccount
  */
-class EnkaGameAccount<U extends IUser = IUser> {
+class EnkaGameAccount<U extends User> {
     /** Enka.Network username, not in-game nickname */
     readonly username: string;
     /**  */
