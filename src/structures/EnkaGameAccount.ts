@@ -61,7 +61,7 @@ class EnkaGameAccount<U extends User> {
 
         this.hash = json.getAsString("hash");
 
-        this.hoyoType = json.getAsNumber("hoyo_type");
+        this.hoyoType = json.getAsNumber("hoyo_type") as HoyoType;
 
         this.user = EnkaSystem.libraryMap.get(this.hoyoType)?.getUser(data) as U | null;
 

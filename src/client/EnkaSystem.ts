@@ -19,7 +19,7 @@ import { nonNullable } from "../utils/ts_utils";
  * |0|Genshin Impact|
  * |1|Honkai: Star Rail|
  */
-export type HoyoType = number;
+export type HoyoType = 0 | 1;
 
 export interface EnkaSystemOptions {
     enkaApiUrl: string;
@@ -135,7 +135,7 @@ export default class EnkaSystem {
         const json = new JsonReader(response.data);
 
         const entries = json.mapObject((charId, builds) => [charId, builds.mapArray((_, b) => {
-            const hoyoType = b.getAsNumber("hoyo_type");
+            const hoyoType = b.getAsNumber("hoyo_type") as HoyoType;
             const library = EnkaSystem.libraryMap.get(hoyoType);
             if (!library) return null;
             return library.getCharacterBuild(b.getAsJsonObject(), username, hash);
