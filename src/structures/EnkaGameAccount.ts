@@ -7,7 +7,6 @@ export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
 
 /**
  * The game account added to the Enka.Network account.
- * @en EnkaGameAccount
  */
 class EnkaGameAccount<U extends User> {
     /** Enka.Network username, not in-game nickname */
@@ -63,7 +62,7 @@ class EnkaGameAccount<U extends User> {
 
         this.hoyoType = json.getAsNumber("hoyo_type") as HoyoType;
 
-        this.user = system.libraryMap.get(this.hoyoType)?.getUser(data) as U | null;
+        this.user = system.getLibrary(this.hoyoType)?.getUser(data) as U | null;
 
         this.uid = json.getAsNumberWithDefault(null, "uid");
 

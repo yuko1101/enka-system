@@ -1,7 +1,6 @@
 import EnkaNetworkError from "./EnkaNetworkError";
 
 /**
- * @en UserNotFoundError
  * @extends {EnkaNetworkError}
  */
 class UserNotFoundError extends EnkaNetworkError {

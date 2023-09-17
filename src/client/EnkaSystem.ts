@@ -21,6 +21,7 @@ import { nonNullable } from "../utils/ts_utils";
  */
 export type HoyoType = 0 | 1;
 
+/** @typedef */
 export interface EnkaSystemOptions {
     enkaApiUrl: string;
     requestTimeout: number;
@@ -29,11 +30,14 @@ export interface EnkaSystemOptions {
 
 const getEnkaProfileUrl = (enkaUrl: string, username: string) => `${enkaUrl}/api/profile/${username}`;
 
+/**  */
 export default class EnkaSystem {
+    /** Default EnkaSystem instance. */
     static readonly instance: EnkaSystem = new EnkaSystem();
+    /**  */
     static readonly enkaUrl = "https://enka.network";
 
-    readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
+    private readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
 
     // TODO: easy way to set options
     options: EnkaSystemOptions = {
@@ -42,11 +46,17 @@ export default class EnkaSystem {
         userAgent: `enka-system@${version}`,
     };
 
+    /**
+     * @param library
+     */
     registerLibrary(library: EnkaLibrary<User>): void {
         if (this.libraryMap.has(library.hoyoType)) throw new Error(`Library for HoyoType ${library.hoyoType} is already registered. Create a new EnkaSystem instance to register multiple libraries for the same HoyoType.`);
         this.libraryMap.set(library.hoyoType, library);
     }
 
+    /**
+     * @param hoyoType
+     */
     getLibrary(hoyoType: HoyoType): EnkaLibrary<User> | undefined {
         return this.libraryMap.get(hoyoType);
     }

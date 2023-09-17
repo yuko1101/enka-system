@@ -3,7 +3,6 @@ import EnkaSystem from "../client/EnkaSystem";
 
 /**
  * The Enka.Network account
- * @en EnkaProfile
  */
 class EnkaProfile {
     /**  */
