@@ -51,7 +51,7 @@ class EnkaGameAccount<U extends User> {
      * @param system
      * @param username
      */
-    constructor(data: JsonObject, username: string) {
+    constructor(system: EnkaSystem, data: JsonObject, username: string) {
 
         this._data = data;
 
@@ -63,7 +63,7 @@ class EnkaGameAccount<U extends User> {
 
         this.hoyoType = json.getAsNumber("hoyo_type") as HoyoType;
 
-        this.user = EnkaSystem.libraryMap.get(this.hoyoType)?.getUser(data) as U | null;
+        this.user = system.libraryMap.get(this.hoyoType)?.getUser(data) as U | null;
 
         this.uid = json.getAsNumberWithDefault(null, "uid");
 

@@ -30,28 +30,35 @@ export interface EnkaSystemOptions {
 const getEnkaProfileUrl = (enkaUrl: string, username: string) => `${enkaUrl}/api/profile/${username}`;
 
 export default class EnkaSystem {
-    static readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
-
+    static readonly instance: EnkaSystem = new EnkaSystem();
     static readonly enkaUrl = "https://enka.network";
+
+    readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
+
     // TODO: easy way to set options
-    static options: EnkaSystemOptions = {
+    options: EnkaSystemOptions = {
         enkaApiUrl: "https://enka.network",
         requestTimeout: 3000,
         userAgent: `enka-system@${version}`,
     };
 
-    static registerLibrary(library: EnkaLibrary<User>): void {
+    registerLibrary(library: EnkaLibrary<User>): void {
+        if (this.libraryMap.has(library.hoyoType)) throw new Error(`Library for HoyoType ${library.hoyoType} is already registered. Create a new EnkaSystem instance to register multiple libraries for the same HoyoType.`);
         this.libraryMap.set(library.hoyoType, library);
+    }
+
+    getLibrary(hoyoType: HoyoType): EnkaLibrary<User> | undefined {
+        return this.libraryMap.get(hoyoType);
     }
 
     /**
      * @param username enka.network username, not in-game nickname
      * @returns the Enka.Network account
      */
-    static async fetchEnkaProfile(username: string): Promise<EnkaProfile> {
-        const url = getEnkaProfileUrl(this.enkaUrl, username) + "/";
+    async fetchEnkaProfile(username: string): Promise<EnkaProfile> {
+        const url = getEnkaProfileUrl(this.options.enkaApiUrl, username) + "/";
 
-        const response = await fetchJson(url, true);
+        const response = await fetchJson(url, this, true);
 
         if (response.status !== 200) {
             switch (response.status) {
@@ -70,10 +77,10 @@ export default class EnkaSystem {
      * @param username enka.network username, not in-game nickname
      * @returns the all game accounts added to the Enka.Network account
      */
-    static async fetchEnkaGameAccounts(username: string, allowedHoyoTypes: HoyoType[] | undefined = undefined): Promise<EnkaGameAccount<User>[]> {
-        const url = `${getEnkaProfileUrl(this.enkaUrl, username)}/hoyos/`;
+    async fetchEnkaGameAccounts(username: string, allowedHoyoTypes: HoyoType[] | undefined = undefined): Promise<EnkaGameAccount<User>[]> {
+        const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/`;
 
-        const response = await fetchJson(url, true);
+        const response = await fetchJson(url, this, true);
 
         if (response.status !== 200) {
             switch (response.status) {
@@ -85,7 +92,7 @@ export default class EnkaSystem {
         }
         const data = response.data as { [hash: string]: JsonObject };
 
-        return Object.values(data).filter(u => !allowedHoyoTypes || (u["hoyo_type"] as string) in allowedHoyoTypes).map(u => new EnkaGameAccount(u, username));
+        return Object.values(data).filter(u => !allowedHoyoTypes || (u["hoyo_type"] as string) in allowedHoyoTypes).map(u => new EnkaGameAccount(this, u, username));
     }
 
 
@@ -94,10 +101,10 @@ export default class EnkaSystem {
      * @param hash EnkaUser hash
      * @returns the game account added to the Enka.Network account
      */
-    static async fetchEnkaGameAccount<U extends User>(username: string, hash: string): Promise<EnkaGameAccount<U>> {
-        const url = `${getEnkaProfileUrl(this.enkaUrl, username)}/hoyos/${hash}/`;
+    async fetchEnkaGameAccount<U extends User>(username: string, hash: string): Promise<EnkaGameAccount<U>> {
+        const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/${hash}/`;
 
-        const response = await fetchJson(url, true);
+        const response = await fetchJson(url, this, true);
 
         if (response.status !== 200) {
             switch (response.status) {
@@ -109,7 +116,7 @@ export default class EnkaSystem {
         }
         const data = response.data;
 
-        return new EnkaGameAccount<U>(data, username);
+        return new EnkaGameAccount<U>(this, data, username);
     }
 
     /**
@@ -117,11 +124,11 @@ export default class EnkaSystem {
      * @param hash EnkaUser hash
      * @returns the game character builds including saved builds in Enka.Network account
      */
-    static async fetchEnkaCharacterBuilds<T extends CharacterBuild>(username: string, hash: string): Promise<{ [characterId: string]: T[] }> {
+    async fetchEnkaCharacterBuilds<T extends CharacterBuild>(username: string, hash: string): Promise<{ [characterId: string]: T[] }> {
 
-        const url = `${getEnkaProfileUrl(this.enkaUrl, username)}/hoyos/${hash}/builds/`;
+        const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/${hash}/builds/`;
 
-        const response = await fetchJson(url, true);
+        const response = await fetchJson(url, this, true);
 
         if (response.status !== 200) {
             switch (response.status) {
@@ -136,11 +143,11 @@ export default class EnkaSystem {
 
         const entries = json.mapObject((charId, builds) => [charId, builds.mapArray((_, b) => {
             const hoyoType = b.getAsNumber("hoyo_type") as HoyoType;
-            const library = EnkaSystem.libraryMap.get(hoyoType);
+            const library = this.libraryMap.get(hoyoType);
             if (!library) return null;
             return library.getCharacterBuild(b.getAsJsonObject(), username, hash);
         }).filter(nonNullable)]);
 
-        return Object.fromEntries(entries);
+        return Object.fromEntries(entries.filter(entry => entry[1].length > 0));
     }
 }

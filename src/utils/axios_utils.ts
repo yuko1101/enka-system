@@ -6,11 +6,11 @@ import EnkaSystem from "../client/EnkaSystem";
  * @param url
  * @param enableTimeout
  */
-export async function fetchJson(url: string, enableTimeout = false): Promise<AxiosResponse> {
-    const headers: JsonObject = { "User-Agent": EnkaSystem.options.userAgent };
+export async function fetchJson(url: string, system: EnkaSystem, enableTimeout = false): Promise<AxiosResponse> {
+    const headers: JsonObject = { "User-Agent": system.options.userAgent };
 
     const options: AxiosRequestConfig = { headers } as AxiosRequestConfig;
-    if (enableTimeout) options.timeout = EnkaSystem.options.requestTimeout;
+    if (enableTimeout) options.timeout = system.options.requestTimeout;
 
     const res = await axios.get(url, options);
 
