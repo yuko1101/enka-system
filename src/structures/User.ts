@@ -1,7 +1,7 @@
 import { JsonObject, JsonReader } from "config_file.js";
 
 /**  */
-export default class User {
+class User {
 
     readonly _data: JsonObject;
 
@@ -12,3 +12,5 @@ export default class User {
         this._data = data.getAsJsonObject();
     }
 }
+
+export default User;

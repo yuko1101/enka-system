@@ -4,9 +4,11 @@ import CharacterBuild from "../structures/CharacterBuild";
 import { HoyoType } from "./EnkaSystem";
 
 /** @typedef */
-export default interface EnkaLibrary<U extends User> {
+interface EnkaLibrary<U extends User> {
     hoyoType: HoyoType;
 
     getUser(data: JsonObject): U;
     getCharacterBuild(data: JsonObject, username: string, hash: string): CharacterBuild;
 }
+
+export default EnkaLibrary;

@@ -6,7 +6,7 @@ import EnkaLibrary from "./EnkaLibrary";
 import { version } from "../../package.json";
 import { fetchJson } from "../utils/axios_utils";
 import EnkaGameAccount from "../structures/EnkaGameAccount";
-import { JsonObject, JsonReader } from "config_file.js";
+import { JsonObject, JsonReader, bindOptions } from "config_file.js";
 import User from "../structures/User";
 import CharacterBuild from "../structures/CharacterBuild";
 import { nonNullable } from "../utils/ts_utils";
@@ -31,20 +31,27 @@ export interface EnkaSystemOptions {
 const getEnkaProfileUrl = (enkaUrl: string, username: string) => `${enkaUrl}/api/profile/${username}`;
 
 /**  */
-export default class EnkaSystem {
+class EnkaSystem {
     /** Default EnkaSystem instance. */
     static readonly instance: EnkaSystem = new EnkaSystem();
     /**  */
-    static readonly enkaUrl = "https://enka.network";
+    static readonly enkaUrl: string = "https://enka.network";
 
     private readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
 
     // TODO: easy way to set options
-    options: EnkaSystemOptions = {
-        enkaApiUrl: "https://enka.network",
-        requestTimeout: 3000,
-        userAgent: `enka-system@${version}`,
-    };
+    options: EnkaSystemOptions;
+
+    /**
+     * @param options
+     */
+    constructor(options: Partial<EnkaSystemOptions> = {}) {
+        this.options = bindOptions({
+            enkaApiUrl: "https://enka.network",
+            requestTimeout: 3000,
+            userAgent: `enka-system@${version}`,
+        }, options) as unknown as EnkaSystemOptions;
+    }
 
     /**
      * @param library
@@ -161,3 +168,5 @@ export default class EnkaSystem {
         return Object.fromEntries(entries.filter(entry => entry[1].length > 0));
     }
 }
+
+export default EnkaSystem;

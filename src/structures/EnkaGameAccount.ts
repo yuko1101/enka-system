@@ -15,8 +15,8 @@ class EnkaGameAccount<U extends User> {
     readonly hash: string;
     /**  */
     readonly hoyoType: HoyoType;
-    /** [Genshin User](User) or [Star Rail User](https://starrail.vercel.app/docs/api/User) */
-    readonly user: U | unknown;
+    /** [GenshinUser](https://enka-network-api.vercel.app/docs/api/GenshinUser) or [StarRailUser](https://starrail.vercel.app/docs/api/StarRailUser) */
+    readonly user: U | null;
     /**  */
     readonly uid: number | null;
     /**  */

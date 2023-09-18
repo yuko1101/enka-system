@@ -1,4 +1,6 @@
 /**  */
-export default class CharacterBuild {
+class CharacterBuild {
 
 }
+
+export default CharacterBuild;
