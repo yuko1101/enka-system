@@ -1,6 +1,8 @@
 import { JsonReader, JsonObject } from "config_file.js";
 import EnkaSystem, { HoyoType } from "../client/EnkaSystem";
 import User from "./User";
+import CharacterBuild from "./CharacterBuild";
+import EnkaLibrary, { ExtractBuildType, ExtractUserType } from "../client/EnkaLibrary";
 
 /** @typedef */
 export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
@@ -8,7 +10,8 @@ export type GameServerRegion = "" | "CN" | "B" | "NA" | "EU" | "ASIA" | "TW";
 /**
  * The game account added to the Enka.Network account.
  */
-class EnkaGameAccount<U extends User> {
+class EnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>> {
+    readonly system: EnkaSystem;
     /** Enka.Network username, not in-game nickname */
     readonly username: string;
     /**  */
@@ -16,7 +19,7 @@ class EnkaGameAccount<U extends User> {
     /**  */
     readonly hoyoType: HoyoType;
     /** [GenshinUser](https://enka-network-api.vercel.app/docs/api/GenshinUser) or [StarRailUser](https://starrail.vercel.app/docs/api/StarRailUser) */
-    readonly user: U | null;
+    readonly user: ExtractUserType<T> | null;
     /**  */
     readonly uid: number | null;
     /**  */
@@ -52,6 +55,7 @@ class EnkaGameAccount<U extends User> {
      */
     constructor(system: EnkaSystem, data: JsonObject, username: string) {
 
+        this.system = system;
         this._data = data;
 
         this.username = username;
@@ -62,7 +66,7 @@ class EnkaGameAccount<U extends User> {
 
         this.hoyoType = json.getAsNumber("hoyo_type") as HoyoType;
 
-        this.user = system.getLibrary(this.hoyoType)?.getUser(data) as U | null;
+        this.user = system.getLibrary(this.hoyoType)?.getUser(data) as ExtractUserType<T> | null;
 
         this.uid = json.getAsNumberWithDefault(null, "uid");
 
@@ -85,6 +89,13 @@ class EnkaGameAccount<U extends User> {
         this.characterOrder = json.getValue("avatar_order") as { [characterId: string]: number } | null;
 
         this.url = `${EnkaSystem.enkaUrl}/u/${username}/${this.hash}/`;
+    }
+
+    /**
+     * @returns the game character builds including saved builds in the Enka.Network game account
+     */
+    async fetchBuilds(): Promise<{ [characterId: string]: ExtractBuildType<T>[] }> {
+        return await this.system.fetchEnkaCharacterBuilds(this.username, this.hash);
     }
 }
 

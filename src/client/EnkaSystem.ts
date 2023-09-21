@@ -1,7 +1,7 @@
 import EnkaNetworkError from "../errors/EnkaNetworkError";
 import UserNotFoundError from "../errors/UserNotFoundError";
 import EnkaProfile from "../structures/EnkaProfile";
-import EnkaLibrary from "./EnkaLibrary";
+import EnkaLibrary, { ExtractBuildType } from "./EnkaLibrary";
 
 import { version } from "../../package.json";
 import { fetchJson } from "../utils/axios_utils";
@@ -37,7 +37,7 @@ class EnkaSystem {
     /**  */
     static readonly enkaUrl: string = "https://enka.network";
 
-    private readonly libraryMap: Map<HoyoType, EnkaLibrary<User>> = new Map();
+    private readonly libraryMap: Map<HoyoType, EnkaLibrary<User, CharacterBuild>> = new Map();
 
     // TODO: easy way to set options
     options: EnkaSystemOptions;
@@ -56,7 +56,7 @@ class EnkaSystem {
     /**
      * @param library
      */
-    registerLibrary(library: EnkaLibrary<User>): void {
+    registerLibrary(library: EnkaLibrary<User, CharacterBuild>): void {
         if (this.libraryMap.has(library.hoyoType)) throw new Error(`Library for HoyoType ${library.hoyoType} is already registered. Create a new EnkaSystem instance to register multiple libraries for the same HoyoType.`);
         this.libraryMap.set(library.hoyoType, library);
     }
@@ -64,7 +64,7 @@ class EnkaSystem {
     /**
      * @param hoyoType
      */
-    getLibrary(hoyoType: HoyoType): EnkaLibrary<User> | undefined {
+    getLibrary(hoyoType: HoyoType): EnkaLibrary<User, CharacterBuild> | undefined {
         return this.libraryMap.get(hoyoType);
     }
 
@@ -87,14 +87,15 @@ class EnkaSystem {
         }
         const data = response.data;
 
-        return new EnkaProfile(data);
+        return new EnkaProfile(this, data);
     }
 
     /**
      * @param username enka.network username, not in-game nickname
+     * @param allowedHoyoTypes hoyoTypes to filter
      * @returns the all game accounts added to the Enka.Network account
      */
-    async fetchEnkaGameAccounts(username: string, allowedHoyoTypes: HoyoType[] | undefined = undefined): Promise<EnkaGameAccount<User>[]> {
+    async fetchEnkaGameAccounts(username: string, allowedHoyoTypes: HoyoType[] | undefined = undefined): Promise<EnkaGameAccount<EnkaLibrary<User, CharacterBuild>>[]> {
         const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/`;
 
         const response = await fetchJson(url, this, true);
@@ -115,10 +116,10 @@ class EnkaSystem {
 
     /**
      * @param username enka.network username, not in-game nickname
-     * @param hash EnkaUser hash
+     * @param hash the game account hash
      * @returns the game account added to the Enka.Network account
      */
-    async fetchEnkaGameAccount<U extends User>(username: string, hash: string): Promise<EnkaGameAccount<U>> {
+    async fetchEnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>>(username: string, hash: string): Promise<EnkaGameAccount<T>> {
         const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/${hash}/`;
 
         const response = await fetchJson(url, this, true);
@@ -133,15 +134,15 @@ class EnkaSystem {
         }
         const data = response.data;
 
-        return new EnkaGameAccount<U>(this, data, username);
+        return new EnkaGameAccount(this, data, username);
     }
 
     /**
      * @param username enka.network username, not in-game nickname
-     * @param hash EnkaUser hash
-     * @returns the game character builds including saved builds in Enka.Network account
+     * @param hash the game account hash
+     * @returns the game character builds including saved builds in the Enka.Network game account
      */
-    async fetchEnkaCharacterBuilds<T extends CharacterBuild>(username: string, hash: string): Promise<{ [characterId: string]: T[] }> {
+    async fetchEnkaCharacterBuilds<T extends EnkaLibrary<User, CharacterBuild>>(username: string, hash: string): Promise<{ [characterId: string]: ExtractBuildType<T>[] }> {
 
         const url = `${getEnkaProfileUrl(this.options.enkaApiUrl, username)}/hoyos/${hash}/builds/`;
 
@@ -150,7 +151,7 @@ class EnkaSystem {
         if (response.status !== 200) {
             switch (response.status) {
                 case 404:
-                    throw new UserNotFoundError(`Enka.Network Profile with username ${username} or EnkaUser with hash ${hash} was not found.`, response.status, response.statusText);
+                    throw new UserNotFoundError(`Enka.Network Profile with username ${username} or EnkaGameAccount with hash ${hash} was not found.`, response.status, response.statusText);
                 default:
                     throw new EnkaNetworkError(`Request to enka.network failed with unknown status code ${response.status} - ${response.statusText}\nRequest url: ${url}`, response.status, response.statusText);
             }
