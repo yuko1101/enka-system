@@ -126,7 +126,7 @@ class EnkaSystem {
         if (response.status !== 200) {
             switch (response.status) {
                 case 404:
-                    throw new UserNotFoundError(`Enka.Network Profile with username ${username} or EnkaUser with hash ${hash} was not found.`, response.status, response.statusText);
+                    throw new UserNotFoundError(`Enka.Network Profile with username ${username} or EnkaGameAccount with hash ${hash} was not found.`, response.status, response.statusText);
                 default:
                     throw new EnkaNetworkError(`Request to enka.network failed with unknown status code ${response.status} - ${response.statusText}\nRequest url: ${url}`, response.status, response.statusText);
             }
