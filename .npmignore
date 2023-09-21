@@ -2,6 +2,7 @@ node_modules/
 src/
 example/
 dev-test/
+docs/
 .vscode/
 .github/
 .fleet/
