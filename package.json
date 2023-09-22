@@ -1,6 +1,6 @@
 {
   "name": "enka-system",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A Node.js library that handles the foundation of Enka.Network API.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
