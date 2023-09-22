@@ -1,3 +1,5 @@
+# 0.3.2
+- Exports InvalidUidFormatError for external use.
 # 0.3.1
 - Fixed that EnkaGameAccount#user will be undefined instead of null.
 - Moved InvalidUidFormatError to enka-system.
