@@ -1,3 +1,5 @@
+# 0.3.4
+- Fixed HoyoType filter in EnkaSystem#fetchEnkaGameAccounts().
 # 0.3.3
 - Better uid type in InvalidUidFormatError.
 # 0.3.2
