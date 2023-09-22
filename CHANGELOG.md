@@ -1,5 +1,6 @@
 # 0.3.1
 - Fixed that EnkaGameAccount#user will be undefined instead of null.
+- Moved InvalidUidFormatError to enka-system.
 # 0.3.0
 - Added EnkaProfile#system, EnkaProfile#fetchGameAccounts(), EnkaProfile#fetchGameAccount(), and EnkaProfile#fetchBuilds().
 - Added EnkaGameAccount#system, and EnkaGameAccount#fetchBuilds().
