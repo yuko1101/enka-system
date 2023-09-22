@@ -5,14 +5,14 @@ import EnkaNetworkError from "./EnkaNetworkError";
  */
 class InvalidUidFormatError extends EnkaNetworkError {
     /** In-game UID of the user */
-    readonly uid: string | number;
+    readonly uid: number;
 
     /**
      * @param uid
      * @param statusCode
      * @param statusMessage
      */
-    constructor(uid: number | string, statusCode: number, statusMessage: string) {
+    constructor(uid: number, statusCode: number, statusMessage: string) {
         super(`Invalid UID format. (${uid} provided.)`, statusCode, statusMessage);
 
         this.name = "InvalidUidFormatError";

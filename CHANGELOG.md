@@ -1,3 +1,5 @@
+# 0.3.3
+- Better uid type in InvalidUidFormatError.
 # 0.3.2
 - Exports InvalidUidFormatError for external use.
 # 0.3.1
