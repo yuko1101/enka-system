@@ -110,7 +110,7 @@ class EnkaSystem {
         }
         const data = response.data as { [hash: string]: JsonObject };
 
-        return Object.values(data).filter(u => !allowedHoyoTypes || (u["hoyo_type"] as string) in allowedHoyoTypes).map(u => new EnkaGameAccount(this, u, username));
+        return Object.values(data).filter(u => !allowedHoyoTypes || allowedHoyoTypes.includes(u["hoyo_type"] as HoyoType)).map(u => new EnkaGameAccount(this, u, username));
     }
 
 
