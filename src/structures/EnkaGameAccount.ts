@@ -66,7 +66,8 @@ class EnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>> {
 
         this.hoyoType = json.getAsNumber("hoyo_type") as HoyoType;
 
-        this.user = system.getLibrary(this.hoyoType)?.getUser(data) as ExtractUserType<T> | null;
+        const library = system.getLibrary(this.hoyoType) as T | undefined;
+        this.user = library ? library.getUser(data) as ExtractUserType<T> : null;
 
         this.uid = json.getAsNumberWithDefault(null, "uid");
 
