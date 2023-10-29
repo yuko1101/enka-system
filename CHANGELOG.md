@@ -1,3 +1,5 @@
+# 0.3.5
+- Fixed AxiosError was occurred instead of EnkaNetworkError.
 # 0.3.4
 - Fixed HoyoType filter in EnkaSystem#fetchEnkaGameAccounts().
 # 0.3.3
