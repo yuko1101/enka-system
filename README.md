@@ -1,2 +1,2 @@
 # enka-system
-A Node.js library that handles the foundation of Enka.Network API.
+A Node.js library which handles the foundation of Enka.Network API.
