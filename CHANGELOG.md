@@ -1,3 +1,5 @@
+# 0.3.6
+- Added EnkaGameAccount#isLivePublic.
 # 0.3.5
 - Fixed AxiosError was occurred instead of EnkaNetworkError.
 # 0.3.4

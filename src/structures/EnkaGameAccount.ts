@@ -29,6 +29,8 @@ class EnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>> {
     /**  */
     readonly isUidPublic: boolean;
     /**  */
+    readonly isLivePublic: boolean;
+    /**  */
     readonly verificationCode: string | null;
     /**  */
     readonly verificationExpires: Date | null;
@@ -76,6 +78,8 @@ class EnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>> {
         this.isPublic = json.getAsBoolean("public");
 
         this.isUidPublic = json.getAsBoolean("uid_public");
+
+        this.isLivePublic = json.getAsBoolean("live_public");
 
         this.verificationCode = json.getAsStringWithDefault(null, "verification_code");
 
