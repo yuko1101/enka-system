@@ -1,4 +1,4 @@
-import { JsonReader, JsonObject } from "config_file.js";
+import { JsonReader, JsonObject, defaultJsonOptions } from "config_file.js";
 import EnkaSystem, { HoyoType } from "../client/EnkaSystem";
 import User from "./User";
 import CharacterBuild from "./CharacterBuild";
@@ -62,7 +62,7 @@ class EnkaGameAccount<T extends EnkaLibrary<User, CharacterBuild>> {
 
         this.username = username;
 
-        const json = new JsonReader(this._data);
+        const json = new JsonReader(defaultJsonOptions, this._data);
 
         this.hash = json.getAsString("hash");
 

@@ -6,7 +6,7 @@ import EnkaLibrary, { ExtractBuildType } from "./EnkaLibrary";
 import { version } from "../../package.json";
 import { fetchJson } from "../utils/axios_utils";
 import EnkaGameAccount from "../structures/EnkaGameAccount";
-import { JsonObject, JsonReader, bindOptions } from "config_file.js";
+import { JsonObject, JsonReader, bindOptions, defaultJsonOptions } from "config_file.js";
 import User from "../structures/User";
 import CharacterBuild from "../structures/CharacterBuild";
 import { nonNullable } from "../utils/ts_utils";
@@ -157,7 +157,7 @@ class EnkaSystem {
             }
         }
 
-        const json = new JsonReader(response.data);
+        const json = new JsonReader(defaultJsonOptions, response.data);
 
         const entries = json.mapObject((charId, builds) => [charId, builds.mapArray((_, b) => {
             const hoyoType = b.getAsNumber("hoyo_type") as HoyoType;

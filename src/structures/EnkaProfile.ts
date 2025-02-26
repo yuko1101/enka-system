@@ -1,4 +1,4 @@
-import { JsonReader, JsonObject } from "config_file.js";
+import { JsonReader, JsonObject, defaultJsonOptions } from "config_file.js";
 import EnkaSystem, { HoyoType } from "../client/EnkaSystem";
 import User from "./User";
 import EnkaLibrary, { ExtractBuildType } from "../client/EnkaLibrary";
@@ -37,7 +37,7 @@ class EnkaProfile {
         this.system = system;
         this._data = data;
 
-        const json = new JsonReader(this._data);
+        const json = new JsonReader(defaultJsonOptions, this._data);
 
         this.username = json.getAsString("username");
 

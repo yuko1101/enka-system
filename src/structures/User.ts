@@ -1,4 +1,4 @@
-import { JsonObject, JsonReader } from "config_file.js";
+import { defaultJsonOptions, JsonObject, JsonReader } from "config_file.js";
 
 /**  */
 class User {
@@ -8,7 +8,7 @@ class User {
     /**
      * @param data
      */
-    constructor(data: JsonReader) {
+    constructor(data: JsonReader<typeof defaultJsonOptions>) {
         this._data = data.getAsJsonObject();
     }
 }
