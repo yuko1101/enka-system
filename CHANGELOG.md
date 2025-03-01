@@ -1,3 +1,5 @@
+# 0.3.7
+- Removed EnkaProfile#signupState.
 # 0.3.6
 - Added EnkaGameAccount#isLivePublic.
 # 0.3.5

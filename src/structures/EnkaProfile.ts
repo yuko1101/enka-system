@@ -22,8 +22,6 @@ class EnkaProfile {
     /**  */
     readonly level: number;
     /**  */
-    readonly signupState: number;
-    /**  */
     readonly url: string;
 
     readonly _data: JsonObject;
@@ -50,8 +48,6 @@ class EnkaProfile {
         this.imageUrl = profile.getAsStringWithDefault(null, "image_url");
 
         this.level = profile.getAsNumber("level");
-
-        this.signupState = profile.getAsNumber("signup_state");
 
         this.url = `${EnkaSystem.enkaUrl}/u/${this.username}/`;
     }
